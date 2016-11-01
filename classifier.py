@@ -1,7 +1,7 @@
 import numpy as np
 
 class Classifier:
-    def __init__(self, datafile):
+    def __init__(self):
         # Store datasets
         self.trainingset = dict()
         self.validationset = dict()
@@ -31,7 +31,36 @@ class Classifier:
             else:
                 self.trainingset[obj_class].append(feature_vector)
 
-    def validate(self):
+    def error_estimate(self, use_training_set=False):
+        '''Returns error rate estimate. If use_training_set is True,
+        the validation will be performed on the training set'''
+        num_classes = len(self.classes)
+        C = np.matrix([np.zeros(num_classes)]*num_classes)
+
+        if(use_training_set):
+            dataset = self.trainingset
+        else:
+            dataset = self.validationset
+
+        for obj_class in dataset:
+            for obj in dataset[obj_class]:
+                # Data is 1-indexed, Python is 0-indexed
+                C[obj_class - 1, self.classify(obj) - 1] += 1
+
+        error_rate = 0.0
+        for i in range(num_classes):
+            # P(omega_i)
+            apriori = 0.0
+            for j in range(num_classes):
+                apriori += C[i,j]
+            apriori /= float(len(dataset[1]) + len(dataset[2])) # Horrible hack
+            # P(e | omega_i)
+            contingent_error_rate = 0.0
+            
+
+        return C
+
+        print self.num_classes
         # Testing classifier on training data
         correct = 0.0
         N = 0.0

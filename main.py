@@ -1,12 +1,13 @@
 from sys import argv
-from MER_Classifier import MER_Classifier
-from LS_Classifier import LS_Classifier
-from kNN_Classifier import kNN_Classifier
+from mer_classifier import MER_Classifier
+from ls_classifier import LS_Classifier
+from knn_classifier import kNN_Classifier
 
 # Read data from file
 if(len(argv) > 1):
     datafile = open(argv[1],'r')
 else:
+    # Default to dataset 1
     datafile = open('ds-1.txt','r')
 
 if(len(argv) > 2):
@@ -18,9 +19,9 @@ if(len(argv) > 2):
     elif(classifier_type == 'kNN'):
         classifier = kNN_Classifier(datafile)
     else:
-        print("Classifier not found")
+        print("Classifier not found. Using Least Squares")
+        classifier = LS_Classifier(datafile)
 else:
-    # Default to MER classifier
-    classifier = MER_Classifier(datafile)
+    classifier = LS_Classifier(datafile)
 
-classifier.validate()
+C = classifier.error_estimate()

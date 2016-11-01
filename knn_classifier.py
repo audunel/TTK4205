@@ -1,10 +1,10 @@
-from Classifier import Classifier
+from classifier import Classifier
 import numpy as np
 
 class kNN_Classifier(Classifier):
     'A Least Squares classifier'
     def __init__(self, datafile):
-        Classifier.__init__(self, datafile)
+        Classifier.__init__(self)
 
         self.read_datafile(datafile)
 

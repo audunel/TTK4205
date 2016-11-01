@@ -1,10 +1,10 @@
+from classifier import Classifier
 import numpy as np
-from Classifier import Classifier
 
 class MER_Classifier(Classifier):
     'A Minimum Error-rate classifier for normally distributed data'
     def __init__(self, datafile):
-        Classifier.__init__(self, datafile)
+        Classifier.__init__(self)
         # Matrices for discriminant function
         self.A = dict()
         self.b = dict()
