@@ -1,27 +1,31 @@
 from sys import argv
+import argparse
 from mer_classifier import MER_Classifier
 from ls_classifier import LS_Classifier
 from knn_classifier import kNN_Classifier
 
-# Read data from file
-if(len(argv) > 1):
-    datafile = open(argv[1],'r')
-else:
-    # Default to dataset 1
-    datafile = open('ds-1.txt','r')
+parser = argparse.ArgumentParser()
+parser.add_argument('datafile', help='The file the data is to be read from')
+parser.add_argument('classifier', type=str.lower, help='The type of classifier to be used (MER, LS or kNN)')
+args = parser.parse_args()
 
-if(len(argv) > 2):
-    classifier_type = argv[2]
-    if(classifier_type == 'MER'):
-        classifier = MER_Classifier(datafile)
-    elif(classifier_type == 'LS'):
-        classifier = LS_Classifier(datafile)
-    elif(classifier_type == 'kNN'):
-        classifier = kNN_Classifier(datafile)
-    else:
-        print("Classifier not found. Using Least Squares")
-        classifier = LS_Classifier(datafile)
+# Read data from file
+datafile = open(args.datafile,'r')
+
+if(args.classifier == 'mer'):
+    classifier = MER_Classifier(datafile)
+elif(args.classifier == 'ls'):
+    classifier = LS_Classifier(datafile)
+elif(args.classifier == 'knn'):
+    classifier = kNN_Classifier(datafile)
 else:
+    print('Classifier not recognized. Using Least Squares')
     classifier = LS_Classifier(datafile)
 
-C = classifier.error_estimate()
+if(args.classifier == 'knn'):
+    classifier.error_estimate_dimensions()
+else:
+    error_rate_training = classifier.error_estimate(use_training_set=True)
+    print ('P(e) = {0:.2f} (Training set)'.format(error_rate_training))
+    error_rate_validation = classifier.error_estimate()
+    print('P(e) = {0:.2f} (Validation set)'.format(error_rate_validation))

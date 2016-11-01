@@ -47,38 +47,12 @@ class Classifier:
                 # Data is 1-indexed, Python is 0-indexed
                 C[obj_class - 1, self.classify(obj) - 1] += 1
 
-        error_rate = 0.0
+        # Estimated error rate is given by the sum of nondiagonal components divided by the sum of all components
+        numerator = 0.0
+        denominator = 0.0
         for i in range(num_classes):
-            # P(omega_i)
-            apriori = 0.0
             for j in range(num_classes):
-                apriori += C[i,j]
-            apriori /= float(len(dataset[1]) + len(dataset[2])) # Horrible hack
-            # P(e | omega_i)
-            contingent_error_rate = 0.0
-            
-
-        return C
-
-        print self.num_classes
-        # Testing classifier on training data
-        correct = 0.0
-        N = 0.0
-        for obj_class in self.trainingset:
-            N += len(self.trainingset[obj_class])
-            for obj in self.trainingset[obj_class]:
-                if self.classify(obj) == obj_class:
-                    correct += 1
-        success_rate = 100 * correct/N
-        print("Successfully classified {0:.2f} of objects in training set".format(success_rate))
-
-        # Testing classifier on validation data
-        correct = 0.0
-        N = 0.0
-        for obj_class in self.validationset:
-            N += len(self.validationset[obj_class])
-            for obj in self.validationset[obj_class]:
-                if self.classify(obj) == obj_class:
-                    correct += 1
-        success_rate = 100 * correct/N
-        print("Successfully classified {0:.2f} of objects in validation set".format(success_rate))
+                if(i != j):
+                    numerator += C[i,j]
+                denominator += C[i,j]
+        return numerator/denominator

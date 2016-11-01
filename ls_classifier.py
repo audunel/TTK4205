@@ -6,7 +6,7 @@ class LS_Classifier(Classifier):
     def __init__(self, datafile):
         Classifier.__init__(self)
 
-        self.a = np.matrix([[]]).T
+        self.a = None
 
         self.read_datafile(datafile)
         self.train()
@@ -26,11 +26,10 @@ class LS_Classifier(Classifier):
                 Y[i] = np.vstack(([1], feature_vector)).T
                 i += 1
         self.a = (Y.T * Y).I * Y.T * b
-        self.__trained = True
 
     def classify(self, x):
-        if not self.__trained:
-            print("Classifier has not been trained yet!")
+        if self.a is None:
+            print("a vector undefined. Classifier may not have been trained yet!")
             return
 
         y = np.vstack(([1], x))
