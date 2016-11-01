@@ -1,7 +1,7 @@
-import numpy as np
 from sys import argv
 from MER_Classifier import MER_Classifier
 from LS_Classifier import LS_Classifier
+from kNN_Classifier import kNN_Classifier
 
 # Read data from file
 if(len(argv) > 1):
@@ -15,9 +15,12 @@ if(len(argv) > 2):
         classifier = MER_Classifier(datafile)
     elif(classifier_type == 'LS'):
         classifier = LS_Classifier(datafile)
+    elif(classifier_type == 'kNN'):
+        classifier = kNN_Classifier(datafile)
     else:
         print("Classifier not found")
 else:
+    # Default to MER classifier
     classifier = MER_Classifier(datafile)
 
 classifier.validate()
