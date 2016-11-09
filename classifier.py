@@ -1,17 +1,25 @@
 import numpy as np
 
 class Classifier:
-    def __init__(self):
+    def __init__(self, datafile, mask=None):
         # Store datasets
         self.trainingset = dict()
         self.validationset = dict()
         self.classes = list()
+        # Feature mask
+        self.mask = mask
         # Data features
         self.num_objs = 0
         self.num_features = 0
 
+        self.read_datafile(datafile)
+
     def read_datafile(self, datafile):
         self.num_objs, self.num_features = [int(n) for n in datafile.readline().split()]
+        if self.mask is None:
+            self.mask = np.ones(self.num_features, dtype=bool)
+        self.dim = list(self.mask).count(True)
+        assert(self.dim <= self.num_features)
 
         count = 0
         for line in datafile:
@@ -21,7 +29,7 @@ class Classifier:
             # store features as column vectors
             feature_vector = np.mat([float(x) for x in line.split()[1:]]).T
 
-            if obj_class not in self.trainingset:
+            if obj_class not in self.classes:
                 self.trainingset[obj_class] = []
                 self.validationset[obj_class] = []
                 self.classes.append(obj_class)

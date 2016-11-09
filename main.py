@@ -1,5 +1,6 @@
 from sys import argv
 import argparse
+import numpy as np
 from mer_classifier import MER_Classifier
 from ls_classifier import LS_Classifier
 from knn_classifier import kNN_Classifier
@@ -22,10 +23,7 @@ else:
     print('Classifier not recognized. Using Least Squares')
     classifier = LS_Classifier(datafile)
 
-if(args.classifier == 'knn'):
-    classifier.error_estimate_dimensions()
-else:
-    error_rate_training = classifier.error_estimate(use_training_set=True)
-    print ('P(e) = {0:.2f} (Training set)'.format(error_rate_training))
-    error_rate_validation = classifier.error_estimate()
-    print('P(e) = {0:.2f} (Validation set)'.format(error_rate_validation))
+error_rate_training = classifier.error_estimate(use_training_set=True)
+print ('P(e) = {0:.2f} (Training set)'.format(error_rate_training))
+error_rate_validation = classifier.error_estimate()
+print('P(e) = {0:.2f} (Validation set)'.format(error_rate_validation))

@@ -3,14 +3,13 @@ import numpy as np
 
 class MER_Classifier(Classifier):
     'A Minimum Error-rate classifier for normally distributed data'
-    def __init__(self, datafile):
-        Classifier.__init__(self)
+    def __init__(self, datafile, mask=None):
+        Classifier.__init__(self, datafile, mask)
         # Matrices for discriminant function
         self.A = dict()
         self.b = dict()
         self.c = dict()
 
-        self.read_datafile(datafile)
         self.train()
 
     def train(self):
@@ -19,8 +18,13 @@ class MER_Classifier(Classifier):
 
             # Estimate statistical properties
             P = float(N)/float(self.num_objs)
-            mu = 1.0/N * sum(self.trainingset[obj_class])
-            sigma = 1.0/N * sum([(x-mu)*(x-mu).T for x in self.trainingset[obj_class]])
+
+            mu = np.matrix(np.zeros(self.dim)).T
+            for feature_vector in self.trainingset[obj_class]:
+                mu += feature_vector[self.mask]
+            mu = 1.0/N * mu
+
+            sigma = 1.0/N * sum([(x[self.mask]-mu)*(x[self.mask]-mu).T for x in self.trainingset[obj_class]])
             
             # Calculate values for discriminant functions
             self.A[obj_class] = -0.5*sigma.I
@@ -30,5 +34,5 @@ class MER_Classifier(Classifier):
             self.__trained = True
 
     def classify(self, x):
-        g = lambda i : x.T*self.A[i]*x + self.b[i].T*x + self.c[i]
+        g = lambda i : x[self.mask].T*self.A[i]*x[self.mask] + self.b[i].T*x[self.mask] + self.c[i]
         return max(self.classes, key=g)
